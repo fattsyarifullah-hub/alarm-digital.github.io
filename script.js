@@ -61,7 +61,8 @@ function checkAlarm() {
         const current = now.getHours().toString().padStart(2,"0") + ":" + now.getMinutes().toString().padStart(2, "0"); //ngecek waktu skrg dan ubah ke string biar sama kyk waktu yang di setting
 
         if (current === AlarmTime) { //klo waktu skrg sama kyk waktu yg diinput user maka lakukan 
-            alert("alarm bunyi") //ini yang dilakukan klo udh sama
+            const nihAudio = new Audio('alarm.mp3')
+            nihAudio.play().loop //ini yang dilakukan klo udh sama
             AlarmActive = false; //klo udh jalan maka settingannya kembali menjadi default
         }
     }, 1000)
