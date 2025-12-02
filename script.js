@@ -31,7 +31,6 @@ function realTime() {
     Hour.innerText = H;
     Minute.innerText = m;
     Second.innerText = s;
-    AMPM.innerText = am;
 };
 
 var interval = setInterval(realTime, 1000); //buat jam realtime berjalan
@@ -39,7 +38,7 @@ var interval = setInterval(realTime, 1000); //buat jam realtime berjalan
 
 let AlarmTime = null; //setting default waktu alarm
 let AlarmActive = false; // ON/OFF dalam toggle alarm
-const nihAudio = new Audio('alarm.mp3')
+const nihAudio = new Audio('alarm.mp3');
 
 function setAlarm() {
 // buat user setting alarmnya
