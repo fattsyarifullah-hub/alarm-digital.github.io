@@ -39,7 +39,9 @@ var interval = setInterval(realTime, 1000); //buat jam realtime berjalan
 
 let AlarmTime = null; //setting default waktu alarm
 let AlarmActive = false; // ON/OFF dalam toggle alarm
-const nihAudio = new Audio('alarm.mp3')
+const selectLagu = document.getElementById('sound-set');
+// single audio element used for alarm playback
+let alarmAudio = new Audio();
 
 function setAlarm() {
 // buat user setting alarmnya
@@ -54,15 +56,43 @@ function setAlarm() {
     alert("alarm di setting ke jam " + AlarmTime); //info dari js klo alarmnya udh disetting
 }
 
+function setLagu() {
+    const pilihanLagu = document.getElementById('sound-set');
+    const value = pilihanLagu.value || '';
+
+    if (!value) {
+        alarmAudio.pause();
+        alarmAudio.src = '';
+        return alarmAudio;
+    }
+
+    if (alarmAudio.src !== value) {
+        alarmAudio.src = value;
+    }
+
+    alarmAudio.loop = true;
+    alarmAudio.preload = 'auto';
+
+    return alarmAudio; 
+}
+
 function checkAlarm() {
     setInterval(() => {
         if (!AlarmActive || !AlarmTime) return; 
         
         const now = new Date();
         const current = now.getHours().toString().padStart(2,"0") + ":" + now.getMinutes().toString().padStart(2, "0"); //ngecek waktu skrg dan ubah ke string biar sama kyk waktu yang di setting
-
+        
         if (current === AlarmTime) { //klo waktu skrg sama kyk waktu yg diinput user maka lakukan 
-            nihAudio.play().loop //ini yang dilakukan klo udh sama
+            // ensure audio source is set and play it
+            setLagu();
+            try {
+                alarmAudio.play();
+            } catch (e) {
+                // play() may return a promise or raise; fail silently here
+                console.warn('Audio play failed', e);
+            }
+
             AlarmActive = false; //klo udh jalan maka settingannya kembali menjadi default
         } 
     }, 1000)
@@ -80,11 +110,13 @@ function toggleAlarm() {
             return;
         }
 
-        if (toggle.checked) {;
+        if (toggle.checked) {
             AlarmActive = true;
         } else {;
             AlarmActive = false;
-            nihAudio.pause();
+            // stop and rewind the currently loaded audio
+            alarmAudio.pause();
+            alarmAudio.currentTime = 0;
         }
     })
 
@@ -102,9 +134,10 @@ function deleteAlarm() {
     const reset = document.getElementById('reset-btn');
     const toggle = document.getElementById('toggle-on/off');
 
-    reset.addEventListener("click", function() {
+        reset.addEventListener("click", function() {
         alert("reset alarm berhasil");
-        nihAudio.pause(); //berhentiin audio klo alarm di reset
+        alarmAudio.pause();
+        alarmAudio.currentTime = 0;
         input.value = "";
         AlarmTime = null;
         AlarmActive = false;
@@ -116,6 +149,9 @@ function deleteAlarm() {
  document.getElementById('alarm-set').addEventListener('change', function() {
     setAlarm(); 
  });
+ document.getElementById('sound-set').addEventListener('change', function() {
+    setLagu();
+ })
  toggleAlarm();
  checkAlarm();
  deleteAlarm();

@@ -31,9 +31,15 @@
           <div class="alarm-set" id="time-set">
             <input type="time" id="alarm-set" />
           </div>
+          <div class="sound-set">
+            <select name="sound" id="sound-set" onchange="setLagu()">
+              <option value=""></option>
+              <option value="epep.mp3">Lagu 1</option>
+              <option value="alarm.mp3">lagu 2</option>
+            </select>
+          </div>
           <!-- tombol untuk on/off alarm -->
           <div class="alarm-button">
-            <p class="label-cekbox">Nyalakan Alarm</p>
             <input class="centang" type="checkbox" id="toggle-on/off" />
             <label for="toggle-on/off" class="custom">
             <span class="handle"></span>
