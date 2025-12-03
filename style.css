@@ -130,8 +130,8 @@ body {
     border-radius: 30px;
 }
 
-.alarm-button {
-    
+.label-cekbox {
+    font-family: var(--text-title);
 }
 
 .alarm-button > input {
@@ -210,4 +210,62 @@ body {
 
 .centang:checked + .custom .handle {
     transform: translateX(25px);
+}
+
+
+/* bagian donasi.html */
+.judul-donate {
+    margin-top: 60px;
+    text-align: center;
+    font-family: var(--text-title);
+}
+
+.bungkus {
+    border: 1px solid rgb(231, 213, 213);
+    border-radius: 8px;
+    width: 1000px;
+    height: 120px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 10px 10px 10px;
+    box-shadow: 
+    0 0 20px rgba(0, 191, 255, 0.7), 
+    0 0 40px rgba(0, 191, 255, 0.3);
+}
+
+.donasi {
+    width: 220px;
+    height: 100px;
+    text-align: center;
+    font-family: var(--text-title);
+    border-radius: 8px;
+    background-color: var(--primary-container);
+    display: inline-block;
+    padding-top: 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+.donasi:hover {
+    box-shadow: 
+    0 0 20px rgba(0, 191, 255, 0.7),
+    0 0 40px rgba(0, 191, 255, 0.3);
+}
+
+.tombol-donate {
+    width: 35px;
+    height: 35px;
+}
+
+.tombol-donate img {
+    width: 35px;
+    height: 35px;
+    transition: all 0.3s ease-in-out;
+}
+
+.tombol-donate img:hover {
+    transform: scale(1.3);
 }
