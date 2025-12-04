@@ -1,18 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Donasi</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1 class="judul-donate">Donate Us</h1>
-    <div class="bungkus">
-        <div class="donasi">Donate <br> RP 2.000 <br>  <a class="tombol-donate" href=""><img src="asset/img/dana.png" alt=""></a> <a class="tombol-donate" href="#"><img src="asset/img/gopey.png" alt=""></a></div>
-        <div class="donasi">Donate <br> RP 5.000 <br>  <a class="tombol-donate" href=""><img src="asset/img/dana.png" alt=""></a> <a class="tombol-donate" href=""><img src="asset/img/gopey.png" alt=""></a></div>
-        <div class="donasi">Donate <br> RP 10.000 <br> <a class="tombol-donate" href=""><img src="asset/img/dana.png" alt=""></a> <a class="tombol-donate" href=""><img src="asset/img/gopey.png" alt=""></a></div>
-        <div class="donasi">Donate <br> RP 20.000 <br> <a class="tombol-donate" href=""><img src="asset/img/dana.png" alt=""></a> <a class="tombol-donate" href=""><img src="asset/img/gopey.png" alt=""></a></div>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="donate-container">
+      <div class="back-button">
+        <a href="index.html" class="btn-back">← Kembali ke Alarm</a>
+      </div>
+
+      <div class="donate-header">
+        <h1 class="judul-donate">Donate jink</h1>
+        <p class="donate-subtitle">Yang donate makin mantep dibuat lagu nya</p>
+      </div>
+
+      <div class="bungkus">
+        <div class="donasi-card" data-amount="10000">
+          <div class="amount">RP 10.000</div>
+          <div class="donation-text">Ketua buat lagu baru</div>
+          <div class="donation-methods">
+            <button class="method-btn dana-btn" title="Dana">
+              <img src="asset/img/dana.png" alt="Dana" />
+            </button>
+            <button class="method-btn gopay-btn" title="GoPay">
+              <img src="asset/img/gopey.png" alt="GoPay" />
+            </button>
+          </div>
+          <div class="hover-effect"></div>
+        </div>
+
+        <div class="donasi-card" data-amount="20000">
+          <div class="amount">RP 20.000</div>
+          <div class="donation-text">mbg biar makin bagus web nya</div>
+          <div class="donation-methods">
+            <button class="method-btn dana-btn" title="Dana">
+              <img src="asset/img/dana.png" alt="Dana" />
+            </button>
+            <button class="method-btn gopay-btn" title="GoPay">
+              <img src="asset/img/gopey.png" alt="GoPay" />
+            </button>
+          </div>
+          <div class="hover-effect"></div>
+        </div>
+
+        <div class="donasi-card" data-amount="50000">
+          <div class="amount">RP 50.000</div>
+          <div class="donation-text">Paket Combo meria mantap</div>
+          <div class="donation-methods">
+            <button class="method-btn dana-btn" title="Dana">
+              <img src="asset/img/dana.png" alt="Dana" />
+            </button>
+            <button class="method-btn gopay-btn" title="GoPay">
+              <img src="asset/img/gopey.png" alt="GoPay" />
+            </button>
+          </div>
+          <div class="hover-effect"></div>
+        </div>
+
+        <div class="donasi-card" data-amount="10000000">
+          <div class="amount">RP 10.000.000</div>
+          <div class="donation-text">
+            Premium Plus plus, langsung jadi atmin
+          </div>
+          <div class="donation-methods">
+            <button class="method-btn dana-btn" title="Dana">
+              <img src="asset/img/dana.png" alt="Dana" />
+            </button>
+            <button class="method-btn gopay-btn" title="GoPay">
+              <img src="asset/img/gopey.png" alt="GoPay" />
+            </button>
+          </div>
+          <div class="hover-effect"></div>
+        </div>
+      </div>
+
+      <div class="custom-donation">
+        <h3>lebihin jank nanti auto update</h3>
+        <input
+          type="number"
+          id="custom-amount"
+          placeholder="Masukkan jumlah..."
+          min="1000"
+        />
+        <div class="custom-methods">
+          <button class="method-btn dana-btn custom-dana" title="Dana">
+            <img src="asset/img/dana.png" alt="Dana" />
+          </button>
+          <button class="method-btn gopay-btn custom-gopay" title="GoPay">
+            <img src="asset/img/gopey.png" alt="GoPay" />
+          </button>
+        </div>
+      </div>
+
+      <div class="donation-message" id="donationMessage"></div>
     </div>
-</body>
+
+    <!-- Modal Popup untuk Form Donasi -->
+    <div class="modal-overlay" id="donationModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Formulir Donasi</h2>
+          <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <form id="donationForm">
+            <!-- Nominal Donasi -->
+            <div class="form-group">
+              <label>Nominal Donasi</label>
+              <div class="amount-display" id="amountDisplay">RP 0</div>
+            </div>
+
+            <!-- Metode Pembayaran -->
+            <div class="form-group">
+              <label>Metode Pembayaran</label>
+              <div class="payment-method-display" id="methodDisplay">-</div>
+            </div>
+
+            <!-- Nama Donor -->
+            <div class="form-group">
+              <label for="donorName">Nama Lengkap *</label>
+              <input
+                type="text"
+                id="donorName"
+                name="donorName"
+                placeholder="Masukkan nama Anda"
+                required
+              />
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label for="donorEmail">Email *</label>
+              <input
+                type="email"
+                id="donorEmail"
+                name="donorEmail"
+                placeholder="Masukkan email Anda"
+                required
+              />
+            </div>
+
+            <!-- No Telepon -->
+            <div class="form-group">
+              <label for="donorPhone">No Telepon *</label>
+              <input
+                type="tel"
+                id="donorPhone"
+                name="donorPhone"
+                placeholder="Masukkan nomor telepon"
+                required
+              />
+            </div>
+
+            <!-- Nomor Rekening / No Dana / GoPay -->
+            <div class="form-group">
+              <label for="accountNumber"
+                >Nomor Rekening / No Dana / GoPay *</label
+              >
+              <input
+                type="text"
+                id="accountNumber"
+                name="accountNumber"
+                placeholder="Masukkan nomor rekening"
+                required
+              />
+            </div>
+
+            <!-- Pesan Tambahan -->
+            <div class="form-group">
+              <label for="donorMessage">Pesan (Opsional)</label>
+              <textarea
+                id="donorMessage"
+                name="donorMessage"
+                placeholder="Tinggalkan pesan untuk kami..."
+                rows="3"
+              ></textarea>
+            </div>
+
+            <!-- Tombol Submit -->
+            <div class="form-actions">
+              <button type="submit" class="btn-submit">
+                Konfirmasi Donasi
+              </button>
+              <button type="button" class="btn-cancel" id="cancelModal">
+                Batal
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="script-donasi.js"></script>
+  </body>
 </html>
