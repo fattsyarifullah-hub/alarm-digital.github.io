@@ -92,6 +92,28 @@ body {
   -moz-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   -o-transform: translate(-50%, -50%);
+    display: flex;
+    height: 300px;
+    width: 600px;
+    padding-top: 20px;
+    justify-content: space-around;
+    flex-direction: column;
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    overflow: visible;
+    transform: translate(-50%, -50%);
+    background-color: #3f4242;
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
 }
 
 .realtime {
@@ -99,6 +121,24 @@ body {
   justify-content: space-between;
   flex-direction: row;
   padding: 0 40px;
+}
+
+.date {
+    background-color: #1f1f1f;
+    border-radius: 8px;
+    width: 200px;
+    height: 24px;
+    text-align: center;
+    padding-top: 7px;
+}
+
+.hour {
+    background-color: #1f1f1f;
+    border-radius: 8px;
+    width: 200px;
+    height: 24px;
+    text-align: center;
+    padding-top: 7px;
 }
 
 .alarm {
@@ -130,6 +170,113 @@ body {
   border-radius: 30px;
 }
 
+
+.sound-set {
+    display: flex;
+    align-items: center;
+}
+
+.sound-set select {
+    width: 220px;
+    height: 50px;
+    padding: 8px 14px;
+    border-radius: 30px;
+    border: 3px solid transparent;
+    outline: none;
+    background: linear-gradient(var(--primary-container)) padding-box,
+                conic-gradient(#ffd966 0deg, #ff7b7b 140deg, #c98bff 260deg, #ffd966 360deg) border-box;
+    color: white;
+    font-family: var(--text-title);
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.sound-set select option {
+    color: black;
+}
+
+@media (max-width: 520px) {
+    .container { width: 92%; }
+    .sound-set select, .alarm-set > input { width: 100%; }
+    .alarm-activated { flex-direction: column; gap: 12px; }
+}
+
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+    width: 220px;
+    font-family: var(--text-title);
+}
+
+.custom-dropdown .dropdown-toggle {
+    width: 100%;
+    height: 50px;
+    border-radius: 30px;
+    padding: 8px 16px;
+    text-align: left;
+    background: linear-gradient(var(--primary-container)) padding-box,
+                conic-gradient(#ffd966 0deg, #ff7b7b 140deg, #c98bff 260deg, #ffd966 360deg) border-box;
+    border: 3px solid transparent;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.custom-dropdown .dropdown-toggle::after {
+    content: '\25BC';
+    font-size: 12px;
+    margin-left: 8px;
+    opacity: 0.9;
+}
+
+.custom-dropdown .dropdown-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 8px);
+    background: var(--primary-container);
+    border-radius: 12px;
+    padding: 6px 6px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+    list-style: none;
+    margin: 0;
+    max-height: 220px;
+    overflow: auto;
+    display: none;
+    z-index: 9999;
+}
+
+.custom-dropdown .dropdown-menu.show {
+    display: block;
+}
+
+.custom-dropdown .dropdown-menu li {
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+}
+
+.custom-dropdown .dropdown-menu li:hover,
+.custom-dropdown .dropdown-menu li.active {
+    background: rgba(255,255,255,0.06);
+}
+
+/* hide native select visually but keep it accessible */
+.sound-set select {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
 .label-cekbox {
   font-family: var(--text-title);
 }
@@ -143,25 +290,26 @@ body {
 }
 
 .reset-btn {
-  margin-left: 10px;
-  width: 100px;
-  height: 40px;
-  background-color: var(--button-background);
-  font-family: var(--text-title);
-  font-size: medium;
-  color: black;
-  border: none;
-  cursor: pointer;
-  border-radius: 40px;
-  -webkit-border-radius: 40px;
-  -moz-border-radius: 40px;
-  -ms-border-radius: 40px;
-  -o-border-radius: 40px;
-  transition: all 0.3s ease-in-out;
-  -webkit-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out;
-  -ms-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
+    margin-top: 25px;
+    margin-left: 10px;
+    width: 100px;
+    height: 40px;
+    background-color: var(--button-background);
+    font-family: var(--text-title);
+    font-size: medium;
+    color: black;
+    border: none;
+    cursor: pointer;
+    border-radius: 40px;
+    -webkit-border-radius: 40px;
+    -moz-border-radius: 40px;
+    -ms-border-radius: 40px;
+    -o-border-radius: 40px;
+    transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
 }
 
 .reset-btn:hover {

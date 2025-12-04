@@ -148,331 +148,88 @@ function deleteAlarm() {
 }
 
 //ini adalah pemanggilan semua function
-document.getElementById("alarm-set").addEventListener("change", function () {
-  setAlarm();
-});
-document.getElementById("sound-set").addEventListener("change", function () {
-  setLagu();
-});
-toggleAlarm();
-checkAlarm();
-deleteAlarm();
+ document.getElementById('alarm-set').addEventListener('change', function() {
+    setAlarm(); 
+ });
+ document.getElementById('sound-set').addEventListener('change', function() {
+    setLagu();
+ })
+ toggleAlarm();
+ checkAlarm();
+ deleteAlarm();
 
-// ============ DONATION PAGE INTERACTIVITY ============
+/* Custom dropdown: build a styled dropdown that mirrors the native select and keeps it in sync. */
+function initCustomDropdown() {
+    const select = document.getElementById('sound-set');
+    if (!select) return;
 
-// Donation amount mapping
-const donationAmounts = {
-  10000: "Ketua buat lagu baru",
-  20000: "mbg biar makin bagus web nya",
-  50000: "Paket Combo meria mantap",
-  10000000: "Premium Plus plus, langsung jadi atmin",
-};
+    const wrapper = select.parentElement.querySelector('.custom-dropdown');
+    if (!wrapper) return;
 
-// Handle preset donation cards - HANYA untuk method buttons
-document.querySelectorAll(".donasi-card").forEach((card) => {
-  const methodButtons = card.querySelectorAll(".method-btn");
-  methodButtons.forEach((btn) => {
-    btn.addEventListener("click", function (e) {
-      e.stopPropagation();
-      const amount = card.dataset.amount;
-      const isGoPay = this.classList.contains("gopay-btn");
+    const toggle = wrapper.querySelector('.dropdown-toggle');
+    const menu = wrapper.querySelector('.dropdown-menu');
 
-      // Add animation
-      card.classList.add("selected");
-      setTimeout(() => card.classList.remove("selected"), 600);
+    // populate menu from select options
+    function buildMenu() {
+        menu.innerHTML = '';
+        for (let i = 0; i < select.options.length; i++) {
+            const opt = select.options[i];
+            const li = document.createElement('li');
+            li.setAttribute('data-value', opt.value);
+            li.setAttribute('role', 'option');
+            li.textContent = opt.text || opt.value;
+            if (opt.disabled) li.classList.add('disabled');
+            menu.appendChild(li);
+        }
+    }
 
-      // Show modal with donation details
-      openDonationModal(amount, isGoPay);
+    buildMenu();
+
+    // set initial label
+    const selOpt = select.options[select.selectedIndex];
+    if (selOpt) toggle.textContent = selOpt.text || selOpt.value || 'Pilih suara';
+
+    // open/close
+    toggle.addEventListener('click', function (e) {
+        const expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        menu.classList.toggle('show');
     });
-  });
-});
 
-// Handle custom donation
-document.querySelector(".custom-dana")?.addEventListener("click", function () {
-  const amount = document.getElementById("custom-amount").value;
-  if (validateCustomAmount(amount)) {
-    openDonationModal(amount, false);
-  }
-});
+    // option click
+    menu.addEventListener('click', function (e) {
+        const li = e.target.closest('li');
+        if (!li) return;
+        const value = li.getAttribute('data-value') || '';
+        // update native select and dispatch change
+        select.value = value;
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        // update toggle label
+        toggle.textContent = li.textContent;
+        // mark active
+        menu.querySelectorAll('li').forEach(node => node.classList.remove('active'));
+        li.classList.add('active');
+        menu.classList.remove('show');
+        toggle.setAttribute('aria-expanded', 'false');
+    });
 
-document.querySelector(".custom-gopay")?.addEventListener("click", function () {
-  const amount = document.getElementById("custom-amount").value;
-  if (validateCustomAmount(amount)) {
-    openDonationModal(amount, true);
-  }
-});
+    // close on outside click
+    document.addEventListener('click', function (e) {
+        if (!wrapper.contains(e.target)) {
+            menu.classList.remove('show');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+    });
 
-// Validate custom amount input
-function validateCustomAmount(amount) {
-  const messageDiv = document.getElementById("donationMessage");
-
-  if (!amount || isNaN(amount)) {
-    showMessage("Silakan masukkan nominal yang valid!", "error");
-    return false;
-  }
-
-  if (amount < 1000) {
-    showMessage("Nominal minimal RP 1.000", "error");
-    return false;
-  }
-
-  return true;
+    // keep native select changes reflected in custom UI (when set programmatically)
+    select.addEventListener('change', function () {
+        const opt = select.options[select.selectedIndex];
+        if (opt) toggle.textContent = opt.text || opt.value || 'Pilih suara';
+        // highlight matching li
+        menu.querySelectorAll('li').forEach(li => {
+            li.classList.toggle('active', li.getAttribute('data-value') === select.value);
+        });
+    });
 }
 
-// Process payment
-function processPayment(amount, isGoPay) {
-  const method = isGoPay ? "GoPay" : "Dana";
-  const formattedAmount = new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(amount);
-
-  // Generate unique transaction ID
-  const transactionId = "TRX-" + Date.now();
-
-  // Show success message
-  showMessage(
-    `✓ Terimakasih atas donasi ${formattedAmount} via ${method}!\nID Transaksi: ${transactionId}`,
-    "success"
-  );
-
-  // Log transaction (in real app, send to server)
-  console.log({
-    amount: amount,
-    method: method,
-    timestamp: new Date(),
-    transactionId: transactionId,
-  });
-
-  // Clear custom input
-  document.getElementById("custom-amount").value = "";
-
-  // Reset message after 5 seconds
-  setTimeout(() => {
-    document.getElementById("donationMessage").textContent = "";
-  }, 5000);
-}
-
-// Show message function
-function showMessage(text, type) {
-  const messageDiv = document.getElementById("donationMessage");
-  messageDiv.textContent = text;
-  messageDiv.className = "donation-message " + type;
-}
-
-// Add input validation for custom amount
-document
-  .getElementById("custom-amount")
-  ?.addEventListener("input", function () {
-    // Allow only numbers
-    this.value = this.value.replace(/[^0-9]/g, "");
-
-    // Format dengan separasi ribuan
-    if (this.value) {
-      const formatted = parseInt(this.value).toLocaleString("id-ID");
-      // Don't change the value, just show it formatted in placeholder or elsewhere
-    }
-  });
-
-// Add hover effects
-document.querySelectorAll(".donasi-card").forEach((card) => {
-  card.addEventListener("mouseenter", function () {
-    this.style.cursor = "pointer";
-  });
-});
-
-// ============ MODAL POPUP FUNCTIONALITY ============
-
-// Menyimpan data donasi saat ini
-let currentDonation = {
-  amount: 0,
-  method: "",
-};
-
-// Open donation modal
-function openDonationModal(amount, isGoPay) {
-  const modal = document.getElementById("donationModal");
-  const amountDisplay = document.getElementById("amountDisplay");
-  const methodDisplay = document.getElementById("methodDisplay");
-
-  // Update modal dengan data donasi
-  currentDonation.amount = amount;
-  currentDonation.method = isGoPay ? "GoPay" : "Dana";
-
-  // Format dan tampilkan nominal
-  const formattedAmount = new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(amount);
-
-  amountDisplay.textContent = formattedAmount;
-  methodDisplay.textContent = currentDonation.method;
-
-  // Tampilkan modal
-  modal.classList.add("show");
-  document.body.style.overflow = "hidden";
-}
-
-// Close donation modal
-function closeDonationModal() {
-  const modal = document.getElementById("donationModal");
-  modal.classList.remove("show");
-  document.body.style.overflow = "auto";
-
-  // Reset form
-  document.getElementById("donationForm").reset();
-}
-
-// Modal event listeners
-document
-  .getElementById("closeModal")
-  ?.addEventListener("click", closeDonationModal);
-document
-  .getElementById("cancelModal")
-  ?.addEventListener("click", closeDonationModal);
-
-// Close modal saat klik di luar (backdrop)
-document
-  .getElementById("donationModal")
-  ?.addEventListener("click", function (e) {
-    if (e.target === this) {
-      closeDonationModal();
-    }
-  });
-
-// Handle form submission
-document
-  .getElementById("donationForm")
-  ?.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    // Ambil data form
-    const formData = {
-      name: document.getElementById("donorName").value.trim(),
-      email: document.getElementById("donorEmail").value.trim(),
-      phone: document.getElementById("donorPhone").value.trim(),
-      accountNumber: document.getElementById("accountNumber").value.trim(),
-      message: document.getElementById("donorMessage").value.trim(),
-      amount: currentDonation.amount,
-      method: currentDonation.method,
-      timestamp: new Date(),
-    };
-
-    // Validasi form
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.accountNumber
-    ) {
-      alert("Silakan isi semua field yang wajib!");
-      return;
-    }
-
-    // Validasi email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      alert("Format email tidak valid!");
-      return;
-    }
-
-    // Validasi phone number (hanya angka)
-    if (!/^\d{10,15}$/.test(formData.phone.replace(/\D/g, ""))) {
-      alert("Nomor telepon tidak valid!");
-      return;
-    }
-
-    // Proses donasi
-    processPayment(formData);
-
-    // Tutup modal
-    closeDonationModal();
-  });
-
-// Update processPayment function
-function processPayment(formData) {
-  const formattedAmount = new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(formData.amount);
-
-  // Generate unique transaction ID
-  const transactionId = "TRX-" + Date.now();
-
-  // Tampilkan success message
-  showMessage(
-    `✓ Terimakasih ${formData.name}!\nDonasi ${formattedAmount} via ${formData.method} berhasil!\nID Transaksi: ${transactionId}`,
-    "success"
-  );
-
-  // Log transaction ke console
-  console.log({
-    transactionId: transactionId,
-    donor: {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      accountNumber: formData.accountNumber,
-    },
-    donation: {
-      amount: formData.amount,
-      method: formData.method,
-      message: formData.message,
-    },
-    timestamp: formData.timestamp,
-  });
-
-  // Simpan ke localStorage untuk referensi
-  const donations = JSON.parse(localStorage.getItem("donations") || "[]");
-  donations.push({
-    ...formData,
-    transactionId: transactionId,
-  });
-  localStorage.setItem("donations", JSON.stringify(donations));
-
-  // Clear custom input
-  document.getElementById("custom-amount").value = "";
-
-  // Reset message setelah 5 detik
-  setTimeout(() => {
-    document.getElementById("donationMessage").textContent = "";
-  }, 5000);
-}
-
-// Update processPayment yang lama
-function processPaymentOld(amount, isGoPay) {
-  const method = isGoPay ? "GoPay" : "Dana";
-  const formattedAmount = new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(amount);
-
-  // Generate unique transaction ID
-  const transactionId = "TRX-" + Date.now();
-
-  // Show success message
-  showMessage(
-    `✓ Terimakasih atas donasi ${formattedAmount} via ${method}!\nID Transaksi: ${transactionId}`,
-    "success"
-  );
-
-  // Log transaction (in real app, send to server)
-  console.log({
-    amount: amount,
-    method: method,
-    timestamp: new Date(),
-    transactionId: transactionId,
-  });
-
-  // Clear custom input
-  document.getElementById("custom-amount").value = "";
-
-  // Reset message after 5 seconds
-  setTimeout(() => {
-    document.getElementById("donationMessage").textContent = "";
-  }, 5000);
-}
+initCustomDropdown();

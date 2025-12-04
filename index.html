@@ -33,11 +33,15 @@
           </div>
           <div class="sound-set">
             <select name="sound" id="sound-set" onchange="setLagu()">
-              <option value=""></option>
+              <option value="">Pilih suara</option>
               <option value="asset/sound/epep.mp3">Lagu 1</option>
-              <option value="asset/sound/alarm.mp3">lagu 2</option>
-              <option value="asset/sound/acumalaka.mp3">lagu 3</option>
+              <option value="asset/sound/alarm.mp3">Lagu 2</option>
+              <option value="asset/sound/acumalaka.mp3">Lagu 3</option>
             </select>
+            <div class="custom-dropdown" aria-hidden="true">
+              <button type="button" class="dropdown-toggle" aria-haspopup="listbox" aria-expanded="false">Pilih suara</button>
+              <ul class="dropdown-menu" role="listbox"></ul>
+            </div>
           </div>
           <!-- tombol untuk on/off alarm -->
           <div class="alarm-button">
